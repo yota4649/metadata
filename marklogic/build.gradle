@@ -1,0 +1,91 @@
+/*
+ * The most minimal ml-gradle file just has one thing - the ml-gradle plugin declaration.
+ *
+ * Without a gradle.properties file with properties such as mlAppName and mlRestPort, ml-gradle will use some sensible
+ * defaults to generate a new application - an app name of my-app, port 8003, and a username/password combo of
+ * admin/admin.
+ */
+
+plugins {
+  id "net.saliman.properties" version "1.5.1"
+  id "com.marklogic.ml-gradle" version "4.0.3"
+}
+
+repositories {
+  jcenter()
+  maven { url "https://developer.marklogic.com/maven2/" }
+}
+
+configurations {
+  mlcp {
+    // stop Gradle from complaining about "SLF4J: Class path contains multiple SLF4J bindings."
+    exclude group: 'ch.qos.logback', module: 'logback-classic'
+    exclude group: 'org.apache.avro', module: 'avro-tools'
+  }
+}
+
+dependencies {
+  mlcp "com.marklogic:mlcp:10.0.4"
+
+  /**
+   * mlcp uses Log4j for logging, and if Log4j can't find a configuration file, it will complain and you'll
+   * get none of mlcp's usually-useful logging. It is recommended then that your Gradle configuration for
+   * mlcp include a directory or some other resource that provides a log4j.properties file.
+   */
+  mlcp files("mlcp/conf")
+  mlcp files("mlcp/lib")
+}
+
+ext {
+  // Dynamically read package.json to pull up a name and version for ping response.
+  // Alternatively, you can hard-code these properties in gradle properties, and comment out the following.
+  def pkgFile = file('package.json')
+  def pkg = new groovy.json.JsonSlurper().parseText(pkgFile.text)
+  mlAppConfig.customTokens.put("%%mlPingName%%", pkg.name)
+  mlAppConfig.customTokens.put("%%mlPingVersion%%", pkg.version)
+}
+
+
+/**
+ * Use MlcpTask to load sample people data to support Grove.  Each document
+ * represents a fictitious person.
+*/
+task loadSampleData(type: com.marklogic.gradle.task.MlcpTask) {
+  systemProperty "java.library.path", "mlcp/lib/native"
+  classpath = configurations.mlcp
+  command = "IMPORT"
+  port = mlAppConfig.restPort
+  input_file_path = "sample-data.zip"
+  input_compressed = "true"
+  output_collections = "data,data/people"
+  output_permissions = mlAppConfig.name + "-role,read," + mlAppConfig.name + "-role,update"
+  output_uri_replace = ".*.zip,''"
+}
+
+/**
+ * Sample export and import mlcp tasks.  The export provides a date on the output_file_path
+ * to ensure a new directory is always available.  mlcp will fail if trying to write to a directory
+ * that already
+ *
+*/
+task exportContent(type: com.marklogic.gradle.task.MlcpTask) {
+  systemProperty "java.library.path", "mlcp/lib/native"
+  classpath = configurations.mlcp
+  command = "EXPORT"
+  port = mlAppConfig.restPort
+  output_file_path = "export/" + getDate()
+  output_type = "archive"
+}
+
+task importContent(type: com.marklogic.gradle.task.MlcpTask) {
+  systemProperty "java.library.path", "mlcp/lib/native"
+  classpath = configurations.mlcp
+  command = "IMPORT"
+  port = mlAppConfig.restPort
+  input_file_path = "export/"
+  input_file_type = "archive"
+}
+
+def getDate() {
+  return new Date().format('yyyyMMdd-HHmmss')
+}
