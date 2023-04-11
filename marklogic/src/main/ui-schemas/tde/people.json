@@ -1,7 +1,7 @@
 {
     "template": {
       "context": "/",
-      "collections": ["data"],
+      "collections": ["data/all"],
       "rows": [
         {
           "schemaName": "sample",
@@ -10,7 +10,8 @@
               {
               "name": "_id", 
               "scalarType": "string", 
-              "val": "_id"
+              "val": "_id",
+              "nullable": true
               }, 
               {
               "name": "about", 
