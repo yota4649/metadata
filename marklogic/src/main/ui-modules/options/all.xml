@@ -139,6 +139,15 @@
     </range>
   </constraint>
 
+  <constraint name="作成者">
+    <range type="xs:string" facet="true" collation="http://marklogic.com/collation/codepoint">
+      <element ns="" name="author" />
+      <facet-option>limit=15</facet-option>
+      <facet-option>frequency-order</facet-option>
+      <facet-option>descending</facet-option>
+    </range>
+  </constraint>
+
   <!-- custom constraints to support advanced queries -->
   <constraint name="similar-query">
     <custom facet="false">

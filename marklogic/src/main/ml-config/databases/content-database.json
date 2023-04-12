@@ -14,16 +14,21 @@
   "word-searches": true,
   "trailing-wildcard-searches": true,
 
-  "range-element-index": [
-   {
+  "range-element-index": [{
      "scalar-type":"int", 
-      "collation": "",
+     "collation": "",
      "namespace-uri":"", 
      "localname": "NoAccess",
      "range-value-positions" : "false",
      "invalid-values" : "reject" 
-   }
-  ],
+   }, {
+     "scalar-type":"string", 
+     "collation": "http://marklogic.com/collation/codepoint",
+     "namespace-uri":"", 
+     "localname": "author",
+     "range-value-positions" : "false",
+     "invalid-values" : "ignore" 
+   }],
   "range-element-attribute-index": [],
   "range-field-index": [],
   "path-namespace": [],
@@ -31,31 +36,13 @@
   "range-path-index": [{
     "scalar-type": "string",
     "collation": "http://marklogic.com/collation/codepoint",
-    "path-expression": "docFormat",
-    "range-value-positions": false,
-    "invalid-values": "reject"
-  }, {
-    "scalar-type": "string",
-    "collation": "http://marklogic.com/collation/codepoint",
-    "path-expression": "eyeColor",
-    "range-value-positions": false,
-    "invalid-values": "reject"
-  }, {
-    "scalar-type": "string",
-    "collation": "http://marklogic.com/collation/codepoint",
     "path-expression": "category",
     "range-value-positions": false,
-    "invalid-values": "reject"
+    "invalid-values": "ignore"
   }, {
     "scalar-type": "string",
     "collation": "http://marklogic.com/collation/codepoint",
     "path-expression": "fileType",
-    "range-value-positions": false,
-    "invalid-values": "reject"
-  }, {
-    "scalar-type": "string",
-    "collation": "http://marklogic.com/collation/codepoint",
-    "path-expression": "gender",
     "range-value-positions": false,
     "invalid-values": "reject"
   }],

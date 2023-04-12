@@ -87,9 +87,11 @@
       <div id="buttons-detail">
         <router-link tag="button" class="btn btn-default"
                  :to="{ name: 'root.search' }">検索</router-link>
+<!--
         <router-link tag="button" class="btn btn-primary"
                 v-show="!profile.disallowUpdates"
                 :to="{ name: 'root.edit', params: { id: id } }">編集</router-link>
+-->
         <button class="btn btn-primary"
                 v-show="!profile.disallowUpdates"
                 v-on:click.prevent="deleteDoc()">削除</button>
@@ -111,10 +113,10 @@
 
             <div id="app">
               <ul>
-                <li v-for="item in items" :key="item" >
+                <div v-for="item in items" :key="item" >
                   <input type="checkbox" :id="item" :value="item" v-model="checkedCollections" />
-                  <label :for="item">    {{item}}</label>
-                </li>
+                  <label :for="item">&emsp;{{item}}</label>
+                </div>
               </ul>
             </div>
             <div id="app">
@@ -280,9 +282,6 @@ export default {
 
 
     },
-
-
-
     updateAccessCount() {
       console.log("=====   updateAccessCount      ==== ");
 
@@ -297,13 +296,6 @@ export default {
           console.log(e);
         });
     },
-
-
-
-
-
-
-
     deleteDoc() {
       const self = this;
       if (
@@ -314,8 +306,12 @@ export default {
         )
       ) {
         const toast = self.$parent.$refs.toast;
-        self.$store
-          .dispatch('crud/' + self.type + '/delete', { id: self.id })
+    //    self.$store
+    //      .dispatch('crud/' + self.type + '/delete', { id: self.id })
+
+        var para = {"rs:uri": encodeURIComponent(this.id)};
+        axios
+          .delete("/v1/resources/deleteBoth?rs:uri="+encodeURIComponent(this.id), para)
           .then(function(response) {
             if (response.isError) {
               toast.showToast('Failed to delete the document', {

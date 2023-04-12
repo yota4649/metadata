@@ -9,20 +9,11 @@ function get(context, params) {
 
 function put(context, params, input) {
 
-  xdmp.log("---------- generateMeta put --------");
-  xdmp.log(params);
+  //xdmp.log("---------- generateMeta put --------");
+  //xdmp.log(params);
 
   var tagList = params.tagList;
-  xdmp.log("tagList : "+ tagList);
-
   var tagListSeq = fn.tokenize(tagList, ",")
-
-  let collections = ["Meta","data"];
-  for (let tag of tagListSeq ){
-    tag= fn.stringJoin(fn.tokenize(tag, " "),'');
-    collections.push(tag);
-
-  }
 
 
   var generatedUris=[];
@@ -39,22 +30,42 @@ function put(context, params, input) {
     newMeta.envelope.instance.Manual.filePath = uri;
     newMeta.envelope.instance.Manual.updateDateTime = fn.currentDateTime();
     newMeta.envelope.instance.Manual.category = "Manual"; 
-    let fileName =  fn.tokenize(uri, "\\.");
-    newMeta.envelope.instance.Manual.fileType = fn.tail(fileName); 
-    newMeta.envelope.instance.Manual.author
+
+    let fileName = fn.tokenize(uri, "\\.").toArray();
+    let fileExt = fileName[fileName.length-1];
+
+    newMeta.envelope.instance.Manual.fileType = fileExt; 
+
     let content = xdmp.documentFilter(cts.doc(uri));
+    let author = content.xpath("//html:html/html:head/html:meta[@name='Author']/@content",
+                                    {"html":"http://www.w3.org/1999/xhtml" });
+    if (author) {
+        newMeta.envelope.instance.Manual.author = author;
+    }
+
+    let title = content.xpath("//html:html/html:head/html:title",
+                                    {"html":"http://www.w3.org/1999/xhtml" });
+    if (title) {
+        newMeta.envelope.instance.Manual.title = title;
+    }
+
     newMeta.envelope.instance.Manual.shortContent = fn.substring(content, 0, 400)
     newMeta.envelope.instance.Manual.content=content;
+
+    let collections = ["Meta","data"];
+    collections.push(fileExt);
+    for (let tag of tagListSeq ){
+        tag= fn.stringJoin(fn.tokenize(tag, " "),'');   //remove space
+        collections.push(tag);
+    }
   
-    var perm = xdmp.documentGetPermissions(uri);
+    var perm = xdmp.documentGetPermissions(uri);   // get oritinal permissions
   
     let newuri = uri + ".json";
     generatedUris.push(newuri);
 
-    collections.push(fn.tail(fileName));
-    xdmp.documentInsert(newuri, newMeta,{permissions : perm,
-        collections : collections,
-        quality : 10});
+    xdmp.documentInsert(newuri, newMeta,
+                        {permissions : perm, collections : collections, quality : 10});
 
     xdmp.documentRemoveCollections(uri, "type/all")
 

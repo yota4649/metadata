@@ -1,6 +1,6 @@
 <template>
   <section class="upload">
-    <h1>Upload page</h1>
+    <h1>ファイルアップロード</h1>
     <file-dropzone
         button="false"
         multiple="multiple"
@@ -8,13 +8,13 @@
         v-on:drop-all="sendAllFiles"
         v-on:file-dblclick="openFile">
       <div slot="intro">
-        <p><strong>Drop files here or click to select files.</strong></p>
-        <em>(Files will be uploaded automatically)</em>
+        <p><strong>ここにファイルをドロップするかクリックしてファイルを選択してください</strong></p>
+        <em>(ファイルは自動的にアップロードされます)</em>
       </div>
     </file-dropzone>
-<input v-model="tagList" placeholder="tagList(Comma separated)"><br/>
-    <button class="btn btn-primary"
-                v-on:click="buttonClicked()">Generate Meta</button>
+    タグ名：
+    <input v-model="tagList" placeholder="タグリスト(複数指定の場合はカンマで区切る)">
+    <button class="btn btn-primary" v-on:click="buttonClicked()">メタデータ作成</button>
   </section>
 </template>
 
