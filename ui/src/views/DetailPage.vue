@@ -198,12 +198,14 @@ export default {
     }
   },
   mounted() {
+    console.log('yota before update()');
     this.update();
   },
   methods: {
     update() {
       const self = this;
 
+      console.log('yota inside update()');
       self.metadata = {};
       self.json = undefined;
       self.raw = undefined;
@@ -211,6 +213,8 @@ export default {
       this.$store
         .dispatch('crud/' + self.type + '/view', { id: self.id, view: 'metadata' })
         .then(function(response) {
+            console.log('yota  response.response is error');
+            console.log(response);
           if (!response.isError) {
             var metadata = JSON.parse(response.response);
             var permissions = [];
@@ -252,8 +256,12 @@ export default {
                 });
             }
           }
+	  else {
+          }
+
         }
        );
+       console.log('yota before getcollection()');
        this.getCollection();
        this.updateAccessCount();
     },

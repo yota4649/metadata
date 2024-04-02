@@ -42,25 +42,17 @@ var provider = (function() {
         docsBackendCall(req, res, config, 'GET', uri, {}, function(
           backendResponse
         ) {
-          const contentType = backendResponse.headers['content-type'].split(
-            ';'
-          )[0];
-          const format =
-            backendResponse.headers['vnd.marklogic.document-format'];
+          const contentType = backendResponse.headers['content-type'].split(';')[0];
+          const format = backendResponse.headers['vnd.marklogic.document-format'];
           const size = backendResponse.headers['content-length'];
 
-          docsBackendCall(
-            req,
-            res,
-            config,
-            'GET',
-            uri,
-            {
-              category: 'metadata',
-              format: 'json'
-            },
+          docsBackendCall( req, res, config, 'GET', uri, { category: 'metadata', format: 'json' },
             function(backendResponse, metadata) {
               res.status(backendResponse.statusCode);
+              //console.log("yota metadata before Error /space/metadata/middle-tier/grove-default-routes/crud.js");
+              //console.log('------------------------------');
+              //console.log(metadata);
+              //console.log('------------------------------');
               for (var header in backendResponse.headers) {
                 // copy all others except auth challenge headers
                 if (
@@ -80,9 +72,12 @@ var provider = (function() {
               // pass through REST-api metadata (props, collections, perms, etc)
               let data = {};
               // TODO: improve this error handling
+
               try {
-                data = JSON.parse(metadata);
+                data = JSON.parse(metadata);     // yota commented out
+                //data = metadata;                   // yota added
               } catch (e) {
+                console.log("JSON.parse(metadata) Error");
                 console.log(e);
               }
               // append some more, useful for showing binary files
@@ -150,10 +145,8 @@ var provider = (function() {
           format: (view ? view.format : config.format) || 'json'
         };
 
-        docsBackendCall(req, res, config, req.method, uri, params, function(
-          backendResponse,
-          data
-        ) {
+        docsBackendCall(req, res, config, req.method, uri, params, 
+	  function( backendResponse, data) {
           res.status(backendResponse.statusCode);
           for (var header in backendResponse.headers) {
             // copy all others except auth challenge headers
@@ -297,24 +290,13 @@ var provider = (function() {
           ? action.temporalCollection
           : config.temporalCollection;
 
-        docsBackendCall(
-          req,
-          res,
-          config,
-          method,
-          uri,
-          params,
+        docsBackendCall( req, res, config, method, uri, params,
           function(backendResponse, data) {
             res.status(backendResponse.statusCode);
             for (var header in backendResponse.headers) {
               // rewrite location
               if (header === 'location') {
-                res.header(
-                  header,
-                  idConverter.toId(
-                    backendResponse.headers[header].substring(18)
-                  )
-                );
+                res.header(header,idConverter.toId( backendResponse.headers[header].substring(18)));
 
                 // copy all others except auth challenge headers
               } else if (header !== 'www-authenticate') {
@@ -322,10 +304,7 @@ var provider = (function() {
               }
             }
             if ('' + req.query.download === 'true') {
-              res.header(
-                'content-disposition',
-                'attachment; filename=' + uri.split('/').pop()
-              );
+              res.header( 'content-disposition', 'attachment; filename=' + uri.split('/').pop());
             }
             res.write(data);
             res.end();
@@ -350,16 +329,7 @@ var provider = (function() {
     return router;
   };
 
-  function docsBackendCall(
-    req,
-    res,
-    config,
-    method,
-    uri,
-    params,
-    callback,
-    body
-  ) {
+  function docsBackendCall( req, res, config, method, uri, params, callback, body) {
 
     var path = '/v1/documents';
     params.uri = uri;
@@ -382,8 +352,7 @@ var provider = (function() {
           backendOptions.headers.authorization = authorization;
         }
 
-        var neverCache =
-          config.neverCache !== undefined ? config.neverCache : true;
+        var neverCache = config.neverCache !== undefined ? config.neverCache : true;
         if (neverCache || req.method !== 'GET') {
           noCache(res);
         }

@@ -69,9 +69,6 @@ export default {
   },
   methods: {
     resultLabel(result) {
-      console.log("--------RESULT-------");
-      console.log(result);
-      console.log("--------RESULT-------");
       return result.label || result.uri.split('/').pop();
     },
  /*   getImgUrl(imgName) {

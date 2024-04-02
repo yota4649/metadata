@@ -78,21 +78,21 @@ const $router = new Router({
         checkLogin
       }
     },
-//    {
-//      path: '/create/all',
-//      name: 'root.create',
-//      // lazy-loading of page
-//      component: () =>
-//        import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
-//      props: {
-//        type: 'all'
-//      },
-//      meta: {
-//        label: 'Create',
-//        navArea: 'header',
-//        requiresUpdates: true
-//      }
-//    },
+    {
+      path: '/create/all',
+      name: 'root.create',
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
+      props: {
+        type: 'all'
+      },
+      meta: {
+        label: 'Create',
+        navArea: 'header',
+        requiresUpdates: true
+      }
+    },
     {
       path: '/login',
       name: 'root.login',
@@ -116,24 +116,24 @@ const $router = new Router({
         requiresLogin: true
       }
     },
-//    {
-//      path: '/edit/all/:id',
-//      name: 'root.edit',
-//      // lazy-loading of page
-//      component: () =>
-//        import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
-//      props($route) {
-//        return {
-//          type: 'all',
-//          id: $route.params.id
-//        };
-//      },
-//      meta: {
-//        label: 'Edit',
-//        navArea: 'document',
-//        requiresUpdates: true
-//      }
-//    },
+    {
+      path: '/edit/all/:id',
+      name: 'root.edit',
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
+      props($route) {
+        return {
+          type: 'all',
+          id: $route.params.id
+        };
+      },
+      meta: {
+        label: 'Edit',
+        navArea: 'document',
+        requiresUpdates: true
+      }
+    },
     {
       path: '/detail/all/:id',
       name: 'root.view',

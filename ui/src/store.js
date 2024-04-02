@@ -352,6 +352,7 @@ function typedCrudState(crudType) {
         commit('isInitialized', { initialized: true });
       },
       view(context, { id, view }) {
+	      console.log('---- yota -----',id,view); 
         return crudApi.view(crudType, id, view);
       },
       create(context, { id, data, format }) {

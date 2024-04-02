@@ -38,28 +38,41 @@ function buildCrudUrl(crudType, id, params, view) {
 export default {
   name: 'CRUDApi',
   view(crudType, id, view, params) {
-    return fetch(buildCrudUrl(crudType, id, params, view), {
-      method: 'GET',
-      credentials: 'same-origin'
-    }).then(
-      response => {
-        return response.text().then(text => {
-          return { isError: false, response: text };
-        });
-      },
-      error => {
-        return { isError: true, error: error };
-      }
+
+    console.log('yota CRUDapi.js crudType'); console.log(crudType);
+    console.log(buildCrudUrl(crudType, id, params, view));
+    let URL = buildCrudUrl(crudType, id, params, view);
+    //return fetch(buildCrudUrl(crudType, id, params, view), 
+    return fetch(URL, { method: 'GET', credentials: 'same-origin' })
+           .then(
+             response => {
+	       console.log('Not Error');
+	       console.log('-------------------------');
+	       console.log(response);
+	       console.log('-------------------------');
+               return response.text().then(text => {
+                 return { isError: false, response: text };
+               });
+             },
+             error => { 
+	       console.log('Error');
+		     console.log(response);
+		     return { isError: true, error: error }; }
     );
   },
   create(crudType, id, data, format, params) {
       console.log("++++++++++++++++++++++++ creeate +++++++++++++++++");
-      console.log(id);
-      console.log(crudType);
-      console.log(format);
-      console.log(data);
+      console.log("id",id);
+      console.log("crudType", crudType);
+      console.log("format", format);
+      console.log("params", params);
+      console.log("data", data);
       console.log(data.type);
+      console.log("built URL")
+      params={};
+      params.collection="test";
       console.log(buildCrudUrl(crudType, id, params));
+
     return fetch(buildCrudUrl(crudType, id, params), {
       method: 'POST',
       headers: {

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <options xmlns="http://marklogic.com/appservices/search">
   <search-option>unfiltered</search-option>
   <page-length>10</page-length>
@@ -103,7 +104,7 @@
   <annotation>Delta options here</annotation>
 
   <!-- Facet based on document collections, simple yet elegant -->
-  <constraint name="タグ">
+  <constraint name="Tag">
     <collection facet="true" />
     <!-- optionally enable a prefix to see a specific subset of facets
     <collection facet="true" prefix="data/" />
@@ -121,7 +122,7 @@
     </range>
   </constraint>
 
-  <constraint name="形式">
+  <constraint name="FileType">
     <range type="xs:string" facet="true" collation="http://marklogic.com/collation/codepoint">
       <facet-option>limit=5</facet-option>
       <facet-option>item-order</facet-option>
